@@ -17,13 +17,14 @@ const bgCode=[
 ['interface IRepository<T>','{','    T GetById(int id);','    void Add(T item);','    IEnumerable<T> GetAll();','}']];
 const codePos=[[.03,.14],[.36,.09],[.68,.16],[.05,.46],[.40,.52],[.72,.47],[.04,.82],[.38,.86],[.68,.80]];
 const codePosM=[[.04,.13],[.5,.27],[.04,.43],[.5,.60],[.04,.78]];
-function wsize(){dpr=Math.min(devicePixelRatio||1,1.5);WW=innerWidth;WH=innerHeight;wc.width=Math.round(WW*dpr);wc.height=Math.round(WH*dpr)}
+function wsize(){dpr=1;WW=innerWidth;WH=innerHeight;wc.width=Math.round(WW*dpr);wc.height=Math.round(WH*dpr)}
 let hk=1;
 const PW=[[75,0,130],[100,149,237],[25,25,112],[143,180,255]];
 const mixc=(x,y,t)=>x.map((v,i)=>v+(y[i]-v)*t);
 function drawWaves(sv){
+  const mob_=WW<700;
   wx.setTransform(dpr,0,0,dpr,0,0);wx.clearRect(0,0,WW,WH);
-  const mob=WW<700,N=Math.round(lerp(24,17,hk)),step=10,cr=Math.round(lerp(25,100,tone)),cg=Math.round(lerp(25,149,tone)),cb=Math.round(lerp(112,237,tone));
+  const mob=WW<700,N=Math.round(lerp(24,17,hk)*(mob_?.7:1)),step=mob?18:12,cr=Math.round(lerp(25,100,tone)),cg=Math.round(lerp(25,149,tone)),cb=Math.round(lerp(112,237,tone));
   const A=WH*.075*(1+.75*hk),k1=6.2832/(WW*(.95+.55*hk)),k2=6.2832/(WW*(.52+.3*hk)),k3=6.2832/(WW*(.31+.16*hk)),sw=WW*.15,sh=WH*.24;
   const tt=wt+gt*hk*1.7;
   let strokeS=null;
@@ -67,23 +68,28 @@ const story=$('#story'),shot=$('#shot'),shotbg=$('#shotbg'),w1=$('#w1'),w2=$('#w
 const c0=[230,230,250],c1=[27,0,63];let T=0,dark=false;
 const tlTrack=$('#ttrack'),tlFill=$('#tfill'),tlItems=[...document.querySelectorAll('#timeline .tli')];
 const WORLD=3.0,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
+const L={sh:1,rt:0,rh:1,tt:0};
+const measureL=()=>{L.sh=story.offsetHeight;const r=$('#reviews');L.rt=r.offsetTop;L.rh=r.offsetHeight;L.tt=$('#timeline').offsetTop};
+let lastS=-1,lastCol='';
 function onScroll(){
-  T=clamp(scrollY/(story.offsetHeight-innerHeight));hk=1-ease(clamp(T/.12));
+  T=clamp(scrollY/(L.sh-innerHeight));hk=1-ease(clamp(T/.12));
   const s=ease(clamp(T/.2)),k=lerp(1,.3,s);
+  if(s!==lastS){lastS=s;
   [shot,shotbg].forEach(el=>{el.style.transform=`scale(${k})`;el.style.clipPath=`inset(0 ${(s*10).toFixed(2)}% 0 ${(s*10).toFixed(2)}%)`});
   shotbg.style.setProperty('--g',s.toFixed(3));
-  ph.style.filter=`grayscale(${s}) contrast(${1-s*.12})`;
+  ph.style.filter=`grayscale(${s}) contrast(${1-s*.12})`}
   const c=c0.map((v,i)=>Math.round(lerp(v,c1[i],clamp(s*1.25))));
-  const col=`rgb(${c})`;root.style.setProperty('--bg',col);document.body.style.background=col;root.style.background=col;
-  const rs=$('#reviews'),R=clamp((scrollY-rs.offsetTop)/(rs.offsetHeight-innerHeight)),lt=ease(clamp((R-.3)/.4));
-  if(lt>0){const c2=c.map((v,i)=>Math.round(lerp(v,c0[i],lt))),col2=`rgb(${c2})`;root.style.setProperty('--bg',col2);document.body.style.background=col2;root.style.background=col2}
+  const R=clamp((scrollY-L.rt)/(L.rh-innerHeight)),lt=ease(clamp((R-.3)/.4));
+  {const fin=lt>0?c.map((v,i)=>Math.round(lerp(v,c0[i],lt))):c,colF=`rgb(${fin})`;
+  /* фон пишем только когда цвет реально изменился: --bg на :root заставляет браузер пересчитывать стили всей страницы */
+  if(colF!==lastCol){lastCol=colF;root.style.setProperty('--bg',colF);document.body.style.background=colF;root.style.background=colF}}
   document.body.classList.toggle('dark',s>.45&&lt<.5);dark=s>.45&&lt<.5;
   tone=clamp(s*1.25)*(1-lt);
   const WT=(WORLD-1)*innerWidth;
   /* хронология */
   {const tl=$('#timeline'),N=tlItems.length,gap=Math.round(innerHeight*(innerWidth<700?.5:.44)),dist=(N-1)*gap;
   tl.style.height=(innerHeight+dist+innerHeight*.35)+'px';tlTrack.style.setProperty('--gap',gap+'px');tlTrack.style.setProperty('--dist',dist+'px');
-  const P=clamp((scrollY-tl.offsetTop)/dist),ty=innerHeight*.5-P*dist;
+  const P=clamp((scrollY-L.tt)/dist),ty=innerHeight*.5-P*dist;
   tlTrack.style.transform=`translate3d(0,${ty.toFixed(1)}px,0)`;
   tlFill.style.setProperty('--fill',Math.max(0,P*dist-innerHeight*.3).toFixed(1)+'px');
   tlItems.forEach((e,i)=>{const a=clamp(1-Math.abs(i-P*(N-1))*1.3);e.style.setProperty('--a',a.toFixed(3));e.classList.toggle('on',a>.6)})}
@@ -93,10 +99,12 @@ function onScroll(){
   [hero,hch].forEach(e=>{e.style.opacity=clamp(1-s*2.4);e.style.transform=`translateY(${(-s*60).toFixed(1)}px)`});
   sigT=easeS(clamp((T-.26)/.5));
 }
-addEventListener('scroll',onScroll,{passive:true});
+let sTick=false;addEventListener('scroll',()=>{if(!sTick){sTick=true;requestAnimationFrame(()=>{sTick=false;onScroll()})}},{passive:true});
 /* ---- самостоятельно переливающийся градиент ---- */
 let sigT=0;
-addEventListener('resize',()=>{meas();onScroll()});
+measureL();addEventListener('load',()=>{measureL();onScroll()});
+if(window.ResizeObserver)new ResizeObserver(()=>{measureL();onScroll()}).observe(document.body);
+addEventListener('resize',()=>{meas();measureL();onScroll()});
 let mx=innerWidth/2,my=innerHeight/2;
 addEventListener('pointermove',e=>{mx=e.clientX;my=e.clientY});
 const ir=[...document.querySelectorAll('.iri i')],marqRows=[[$('#ra'),-1],[$('#rb'),1]],off=[0,0];
@@ -111,17 +119,25 @@ function frame(now){
   wmx+=(mx-wmx)*kk(600);wmy+=(my-wmy)*kk(600);
   const cx=wmx/innerWidth,cy=wmy/innerHeight;
   wt=(cx*2.2+cy*1.4)*9000;
-  ir.forEach((el,i)=>{
-    const x=innerWidth*(.5+(cx-.5)*[1.1,-.9,.7][i%3]),y=innerHeight*(.5+(cy-.5)*[-.8,1,-.6][i%3]);
-    el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
-    el.style.setProperty('--c',palCol(cx*2.4+cy*1.2+i*1.35,dark?PALD:PAL))});
-  drawWaves(0);
+  /* большие цветные круги: двигаем только если мышь ещё «догоняется»; цвет меняем ~8 раз/сек (смена цвета = перерисовка огромных градиентов) */
+  const mvd=Math.abs(mx-wmx)>.4||Math.abs(my-wmy)>.4||ir._f==null;
+  if(mvd||now-(ir._t||0)>120){
+    const colorTick=now-(ir._t||0)>120;if(colorTick)ir._t=now;ir._f=1;
+    ir.forEach((el,i)=>{
+      const x=innerWidth*(.5+(cx-.5)*[1.1,-.9,.7][i%3]),y=innerHeight*(.5+(cy-.5)*[-.8,1,-.6][i%3]);
+      el.style.transform=`translate(${x.toFixed(1)}px,${y.toFixed(1)}px)`;
+      if(colorTick)el.style.setProperty('--c',palCol(cx*2.4+cy*1.2+i*1.35,dark?PALD:PAL))})}
+  /* волны на canvas: 30 кадров/с достаточно для такого медленного фона */
+  if(now-(frame._d||0)>=30){frame._d=now;drawWaves(0)}
     /* медленная бесконечная строка за фото */
+  if(T<1){ /* бегущая строка и подпись нужны только пока видна первая сцена */
   if(!reduce){off[0]+=dt*.032;off[1]+=dt*.022}
-  marqRows.forEach(([el,dir],i)=>{const o=off[i]%rw[i];el.style.transform=`translate3d(${(dir<0?-o:o-rw[i]).toFixed(1)}px,0,0)`});
+  marqRows.forEach(([el,dir],i)=>{const o=off[i]%rw[i];el.style.transform=`translate3d(${(dir<0?-o:o-rw[i]).toFixed(1)}px,0,0)`})}
   /* подпись: мягкая волна слева направо */
   sigP+=(sigT-sigP)*kk(240);if(Math.abs(sigT-sigP)<.0005)sigP=sigT;
-  const SOFT=.22,p=sigP*(1+SOFT);w1.setAttribute('offset',clamp(p-SOFT).toFixed(4));w2.setAttribute('offset',clamp(p).toFixed(4));
+  const SOFT=.22,p=sigP*(1+SOFT);
+  /* маска подписи с тяжёлым фильтром перерисовывается только пока анимация идёт */
+  if(sigP!==frame._sp){frame._sp=sigP;w1.setAttribute('offset',clamp(p-SOFT).toFixed(4));w2.setAttribute('offset',clamp(p).toFixed(4))}
   requestAnimationFrame(frame)
 }
 onScroll();requestAnimationFrame(frame);
@@ -187,7 +203,7 @@ const AW=[
 const grid=document.getElementById('agrid'),alb=document.getElementById('alb'),albc=document.getElementById('albc');
 const rot=i=>[-3,2.5,-1.5,3,-2,1.5][i%6];
 function dip(a,big){
-  if(a.src)return `<img src="${a.src}" alt="${(a.c||a.t+' '+a.y).replace(/"/g,'&quot;')}" loading="lazy">`;
+  if(a.src)return `<img src="${a.src}" alt="${(a.c||a.t+' '+a.y).replace(/"/g,'&quot;')}" loading="lazy" decoding="async">`;
   return `${big?`<div class="dw ${a.o}">`:''}<div class="dip ${a.o}"${big?'':` style="transform:rotate(${rot(a.y)}deg)"`}><i>Орехво Ольга Витальевна</i><strong>${a.t}</strong><u></u><u></u><small>Здесь будет фото диплома · ${a.y}</small><s>C#</s></div>${big?'</div>':''}`;
 }
 let cols=0,io=null;
@@ -210,7 +226,7 @@ function close(){alb.classList.remove('on');alb.setAttribute('aria-hidden','true
 alb.addEventListener('click',close);addEventListener('keydown',e=>{if(e.key==='Escape')close()});
 /* лёгкий параллакс колонок */
 const SP=[0,-.09,.04,-.14];let tick=false;
-function par(){tick=false;const sr=document.getElementById('awards').getBoundingClientRect();document.body.classList.toggle('lg-hide',sr.top<120&&sr.bottom-innerHeight*.2>120);const r=grid.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight-r.top)/(r.height+innerHeight)));
+function par(){tick=false;const sr=document.getElementById('awards').getBoundingClientRect();document.body.classList.toggle('lg-hide',sr.top<120&&sr.bottom-innerHeight*.2>120);if(sr.bottom<-400||sr.top>innerHeight*2)return;const r=grid.getBoundingClientRect(),p=Math.min(1,Math.max(0,(innerHeight-r.top)/(r.height+innerHeight)));
   const k=innerWidth<700?.5:1;[...grid.children].forEach((c,i)=>{c.style.transform=`translate3d(0,${((p-.5)*SP[i%4]*innerHeight*k*2).toFixed(1)}px,0)`})}
 const req=()=>{if(!tick){tick=true;requestAnimationFrame(par)}};
 build();par();addEventListener('scroll',req,{passive:true});addEventListener('resize',()=>{build();req()});
@@ -269,13 +285,17 @@ let fc=0;const recheck=()=>{if(seen)setState(document.elementFromPoint(x,y))};
 addEventListener('scroll',recheck,{passive:true});
 addEventListener('pointerdown',()=>ring.classList.add('down'));addEventListener('pointerup',()=>ring.classList.remove('down'));
 document.documentElement.addEventListener('pointerleave',()=>{dot.classList.remove('on');ring.classList.remove('on');seen=false});
-(function loop(){
+let cRun=false,idle=0;function loop(){cRun=true;
   if(++fc%8===0)recheck();let tx=x,ty=y;
   if(card){const r=card.getBoundingClientRect();tx=x+(r.left+r.width/2-x)*.16;ty=y+(r.top+r.height/2-y)*.16}
   rx+=(tx-rx)*.16;ry+=(ty-ry)*.16;
   dot.style.transform=`translate3d(${x}px,${y}px,0)`;ring.style.transform=`translate3d(${rx.toFixed(1)}px,${ry.toFixed(1)}px,0)`;
+  const settled=!card&&Math.abs(tx-rx)<.2&&Math.abs(ty-ry)<.2;
+  if(settled){if(++idle>30){cRun=false;return}}else idle=0;
   requestAnimationFrame(loop);
-})();
+}
+const wake=()=>{idle=0;if(!cRun)requestAnimationFrame(loop)};
+addEventListener('pointermove',wake,{passive:true});addEventListener('scroll',wake,{passive:true});wake();
 })();
 
 ;(()=>{const w=document.getElementById('hmenu');if(!w)return;const b=w.querySelector('.menu');let t;
