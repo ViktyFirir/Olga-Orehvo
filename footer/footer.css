@@ -170,3 +170,25 @@ body.in-footer>header{opacity:0;pointer-events:none;transition:opacity .3s}
   #site-footer .burger{width:42px;height:42px;margin-left:6px}
   #site-footer .flogo{font-size:14px}
 }
+
+
+/* ===== адаптив футера для телефонов и планшетов ===== */
+@media(max-width:860px){
+  #site-footer footer{min-height:0}
+  #site-footer .card{min-height:0;display:flex;flex-direction:column}
+  #site-footer .fstage{display:flex;flex-direction:column;align-items:center;min-height:0;padding:96px 18px 0;gap:0}
+  #site-footer .hl{margin:0 0 26px}
+  /* все ссылки — одним списком в одну колонку, без отдельных заголовков */
+  #site-footer .col{width:100%;align-items:center;gap:9px}
+  #site-footer .col.l{order:1}
+  #site-footer .col.r{order:2;margin-top:9px}
+  #site-footer .col h4{display:none}
+  #site-footer .roll{font-size:clamp(15px,4.4vw,19px)}
+  /* фото ниже ссылок, с запасом под кольца и подпись */
+  #site-footer .roll.acc{margin-top:0}
+  #site-footer .photo{order:3;margin:72px auto 64px;width:min(72%,300px)}
+  /* бегущая строка, кнопка и подвал — в обычном потоке, а не поверх друг друга */
+  #site-footer .fmarq{position:relative;bottom:auto;margin:0}
+  #site-footer .fbtn.cta{position:relative;left:auto;bottom:auto;transform:none!important;align-self:center;margin:28px 0 0}
+  #site-footer .bot{position:relative;margin-top:26px;padding:0 18px calc(20px + env(safe-area-inset-bottom,0px));text-align:center}
+}
