@@ -411,3 +411,24 @@ body.modal-open{overflow:hidden}
   .rc q{font-size:.86rem;margin:.7em 0 .8em}
   .ri.rc{margin-top:calc((var(--ym,11) - 11)*.12vh)}
 }
+
+/* ===== скроллбар ===== */
+/* тёмная дорожка (в цвет --dark), ползунок — градиент от васильково-синего к фиолетовому,
+   как неон в шапке и подписи; на наведении светлеет, при перетаскивании — лавандовый */
+html{scrollbar-gutter:auto}
+::-webkit-scrollbar{width:12px;height:12px}
+::-webkit-scrollbar-track{background:#1B003F;box-shadow:inset 1px 0 0 rgba(230,230,250,.08)}
+::-webkit-scrollbar-thumb{
+  background:linear-gradient(180deg,#6495ED 0%,#7B6BE0 55%,#4B0082 100%);
+  border-radius:12px;
+  border:3px solid #1B003F;            /* зазор вокруг ползунка: он «парит» на дорожке */
+  min-height:60px;
+}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,#8AB0FF 0%,#9A8CF0 55%,#6A2FB8 100%)}
+::-webkit-scrollbar-thumb:active{background:#E6E6FA}
+::-webkit-scrollbar-corner{background:#1B003F}
+/* Firefox (там нет градиента, поэтому один цвет); Chrome/Safari этим не затрагиваем,
+   иначе они бы проигнорировали стиль выше */
+@supports not selector(::-webkit-scrollbar){
+  html{scrollbar-width:thin;scrollbar-color:#6495ED #1B003F}
+}
