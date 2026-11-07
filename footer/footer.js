@@ -1,4 +1,7 @@
 (()=>{
+const loops=[];let fvis=false,frun=false;
+const startLoops=()=>{if(frun)return;frun=true;(function t(){if(!fvis){frun=false;return}loops.forEach(fn=>fn());requestAnimationFrame(t)})()};
+new IntersectionObserver(e=>{fvis=e[0].isIntersecting;if(fvis)startLoops()},{rootMargin:'60% 0px'}).observe(document.getElementById('site-footer'));
 // split headline into animated letters
 let n=0;
 document.querySelectorAll('[data-split]').forEach(h=>{ n=0;
@@ -29,12 +32,11 @@ sl.addEventListener('pointerup',up);sl.addEventListener('pointercancel',up);
 sl.addEventListener('pointerenter',()=>hov=true);sl.addEventListener('pointerleave',()=>hov=false);
 document.getElementById('next').onclick=()=>vel+=18;document.getElementById('prev').onclick=()=>vel-=18;
 const cs=document.getElementById('cs'),sw=document.getElementById('sigw');
-(function loop(){const half=st.scrollWidth/2;
+loops.push(function(){const half=st.scrollWidth/2;
   if(!drag){pos-=(hov?0:.7)+vel;vel*=.92}
   pos%=half;if(pos>0)pos-=half;
   st.style.transform=`translate3d(${pos}px,0,0)`;
-  sw.style.setProperty('--px',cs.getBoundingClientRect().top*.18+'px');
-  requestAnimationFrame(loop)})();
+  sw.style.setProperty('--px',cs.getBoundingClientRect().top*.18+'px')});
 // cursor glow
 const card=document.getElementById('card'),glow=document.getElementById('glow');
 card.addEventListener('pointermove',e=>{const r=card.getBoundingClientRect();glow.style.left=e.clientX-r.left+'px';glow.style.top=e.clientY-r.top+'px'});
@@ -50,8 +52,8 @@ document.querySelectorAll('.mag').forEach(b=>{
     if(b.classList.contains('cta'))b.style.transform=`translate(calc(-50% + ${(e.clientX-r.left-r.width/2)*.25}px),${(e.clientY-r.top-r.height/2)*.35}px)`});
   b.addEventListener('pointerleave',()=>{b.style.transform=b.classList.contains('cta')?'translateX(-50%)':''})});
 // marquee speeds up with scroll
-let last=scrollY;const anim=()=>{const v=Math.abs(scrollY-last);last=scrollY;
-  tr.getAnimations().forEach(a=>a.playbackRate=1+Math.min(v/6,5)*1);requestAnimationFrame(anim)};anim();
+let last=scrollY,lastRate=1;loops.push(()=>{const v=Math.abs(scrollY-last);last=scrollY;const rate=1+Math.min(v/6,5);
+  if(rate!==lastRate){lastRate=rate;tr.getAnimations().forEach(a=>a.playbackRate=rate)}});
 
 // hide the main fixed header while the footer is on screen (its own logo/menu are inside the footer)
 new IntersectionObserver(e=>document.body.classList.toggle('in-footer',e[0].isIntersecting),{threshold:.35}).observe(document.getElementById('site-footer'));
