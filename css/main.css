@@ -292,7 +292,7 @@ html{scroll-behavior:smooth}
 
 
 /* ===== модальное окно отзыва ===== */
-.rc q{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+.rc q{display:-webkit-box;-webkit-line-clamp:8;-webkit-box-orient:vertical;overflow:hidden}
 .rmore{all:unset;cursor:pointer;display:inline-block;margin:0 0 1.1em;font:800 clamp(.7rem,.8vw,.85rem)/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#4B0082;border-bottom:2px solid var(--lime);padding-bottom:.3em;transition:color .2s}
 .rmore:hover,.rmore:focus-visible{color:var(--lime)}
 .rmodal{position:fixed;inset:0;z-index:200;display:flex;align-items:center;justify-content:center;padding:clamp(12px,3vw,40px);background:rgba(27,0,63,.55);backdrop-filter:blur(8px);opacity:0;transition:opacity .3s}
@@ -363,3 +363,51 @@ body.modal-open{overflow:hidden}
 @media(max-width:700px){.plw{padding-left:22px}.pchips{gap:8px}}
 @media(hover:none),(pointer:coarse){.ppv{display:none}}
 @media(prefers-reduced-motion:reduce){#pupils .sh h2 .ch{opacity:1!important;transform:none!important;animation:none!important}.bdg,.bdg::after{animation:none!important}.pl li.fx{transition:none}}
+
+/* ===== адаптив (доработка) ===== */
+/* отзывы: на телефоне две «дорожки» (верх/низ) вместо разброса — карточки не налезают друг на друга */
+@media(max-width:700px){
+  .ri{left:calc(var(--xm,var(--x))*100vw);top:calc(var(--ym,var(--y))*1%)}
+  .rc{width:min(76vw,300px)}
+  .rc q{font-size:.95rem}
+  .rcode{display:none}
+}
+/* длинное слово «Программирование» вылезало за экран и раздувало страницу вширь */
+@media(max-width:700px){
+  #about{padding-left:5vw;padding-right:5vw}
+  #about h2{font-size:clamp(1.4rem,7vw,2.4rem);overflow-wrap:break-word}
+  .ahead h2,.sh h2{overflow-wrap:break-word}
+  .rm-box h3{overflow-wrap:break-word}
+}
+/* подписи у наград не помещались в узкую карточку (телефоны и планшеты) */
+@media(max-width:900px){
+  .al{flex-direction:column;align-items:flex-start;gap:.5em}
+  .al span{max-width:100%;text-align:left;letter-spacing:.08em;overflow-wrap:anywhere}
+  .al span::after{display:none}
+}
+/* подпись цитаты при появлении увеличивается и на миг выходила за экран */
+#voices{overflow-x:clip}
+/* очень узкие телефоны */
+@media(max-width:380px){
+  .btn,.menu{height:42px}.menu{width:42px}
+  .logo{font-size:1.5rem}
+  .pchip{padding:.55em .9em}
+  .rm-box{padding:20px 16px}
+}
+/* телефон боком: низкий экран */
+@media(max-height:480px) and (orientation:landscape){
+  .rc{width:clamp(220px,34vw,300px)}
+  .rc q{-webkit-line-clamp:4;font-size:.85rem}
+}
+/* карточка Дениса: текст длинный, поэтому обрезаем и даём «Читать подробнее» */
+.rbig q{-webkit-line-clamp:5}
+/* планшеты и небольшие ноутбуки: карточки шире, чтобы текст не обрезался */
+@media(min-width:701px) and (max-width:1300px){
+  .rc{width:clamp(270px,31vw,340px)}
+}
+/* совсем низкие телефоны (например 320×568): чуть компактнее карточки, нижняя дорожка ниже */
+@media(max-width:700px) and (max-height:640px){
+  .rc{padding:12px}
+  .rc q{font-size:.86rem;margin:.7em 0 .8em}
+  .ri.rc{margin-top:calc((var(--ym,11) - 11)*.12vh)}
+}
