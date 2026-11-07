@@ -311,7 +311,14 @@ document.addEventListener('pointerdown',e=>{if(!w.contains(e.target))set(false)}
 ;(()=>{const m=document.getElementById('rmodal');if(!m)return;let last;
 const open=()=>{last=document.activeElement;m.hidden=false;requestAnimationFrame(()=>m.classList.add('on'));document.body.classList.add('modal-open');m.querySelector('.rm-x').focus()};
 const close=()=>{m.classList.remove('on');document.body.classList.remove('modal-open');setTimeout(()=>{m.hidden=true},300);last&&last.focus&&last.focus()};
-document.querySelectorAll('[data-open="rmodal"]').forEach(b=>b.addEventListener('click',open));
+const mCap=m.querySelector('.rcap'),mH=m.querySelector('#rmt'),mSub=m.querySelector('.rm-sub'),mBody=m.querySelector('.rm-body');
+const mDef={cap:mCap.textContent,h:mH.textContent,sub:mSub.textContent,body:mBody.innerHTML};
+/* карточка с data-full открывает модалку со своим текстом; без data-full — отзыв Дениса по умолчанию */
+const fillModal=a=>{const d=a&&a.dataset;
+  if(d&&d.full){mCap.textContent=d.cap||'Отзыв';mH.textContent=d.name||'';mSub.textContent=d.sub||'';mBody.innerHTML='';
+    d.full.split('\n').forEach(t=>{const p=document.createElement('p');p.textContent=t;mBody.appendChild(p)})}
+  else{mCap.textContent=mDef.cap;mH.textContent=mDef.h;mSub.textContent=mDef.sub;mBody.innerHTML=mDef.body}};
+document.querySelectorAll('[data-open="rmodal"]').forEach(b=>b.addEventListener('click',()=>{fillModal(b.closest('article'));open()}));
 m.querySelector('.rm-x').addEventListener('click',close);
 m.addEventListener('pointerdown',e=>{if(e.target===m)close()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!m.hidden)close()});
