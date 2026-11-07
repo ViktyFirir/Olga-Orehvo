@@ -97,7 +97,7 @@ function onScroll(){
   const mobR=innerWidth<=700;rItems.forEach(e=>{e.style.transform=`translate3d(${(-R*WT*(mobR&&e._dm?e._dm:e._d)).toFixed(1)}px,0,0)`});
   marq.style.opacity=clamp((T-.07)/.08);
   [hero,hch].forEach(e=>{e.style.opacity=clamp(1-s*2.4);e.style.transform=`translateY(${(-s*60).toFixed(1)}px)`});
-  sigT=easeS(clamp((T-.26)/.5));
+  sigT=innerWidth<700?easeS(clamp((T-.2)/.38)):easeS(clamp((T-.26)/.5));
 }
 let sTick=false;addEventListener('scroll',()=>{if(!sTick){sTick=true;requestAnimationFrame(()=>{sTick=false;onScroll()})}},{passive:true});
 /* ---- самостоятельно переливающийся градиент ---- */
