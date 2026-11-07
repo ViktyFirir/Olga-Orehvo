@@ -46,6 +46,9 @@ body.dark .menu{background:var(--cream);border-color:var(--cream)}
 @keyframes cb{50%{opacity:0}}
 @media(prefers-reduced-motion:reduce){.logo{transition:none}.ap>*{animation:none}.mark *,.chip,.big,.type u{animation:none!important}}
 .sig{position:absolute;left:50%;top:50%;width:min(54vw,66vh);transform:translate(-50%,-50%);overflow:visible;pointer-events:none}
+/* тёмная тема: штрихи подписи делаем светлыми (лавандовыми) и добавляем мягкое свечение, чтобы не сливались с фоном */
+.sig{transition:filter .4s}
+body.dark .sig{filter:brightness(0) invert(1) sepia(.18) saturate(1.6) hue-rotate(205deg) drop-shadow(0 0 3px rgba(230,230,250,.75)) drop-shadow(0 0 14px rgba(100,149,237,.65));opacity:.95}
 .laurel{display:block;overflow:visible}
 #about{position:relative;z-index:2;padding:16vh 6vw 26vh;color:var(--cream);text-align:center}
 #about h2{max-width:1100px;margin:6vh auto 0;font:600 clamp(2.1rem,5.6vw,5.6rem)/.99 var(--sans);letter-spacing:-.025em;text-transform:uppercase}
