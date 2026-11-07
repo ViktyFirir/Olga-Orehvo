@@ -66,7 +66,7 @@ let rw=[1,1];const meas=()=>{rw=['#ra','#rb'].map(q=>$(q).scrollWidth/5||1)};mea
 const story=$('#story'),shot=$('#shot'),shotbg=$('#shotbg'),w1=$('#w1'),w2=$('#w2'),ph=$('#ph'),marq=$('#marq'),hero=$('#hero'),hch=$('#hchips'),root=document.documentElement;
 const c0=[230,230,250],c1=[27,0,63];let T=0,dark=false;
 const tlTrack=$('#ttrack'),tlFill=$('#tfill'),tlItems=[...document.querySelectorAll('#timeline .tli')];
-const WORLD=3.0,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>e._d=+e.dataset.d||1);const tph=$('#tlph');if(tph)tph.src=ph.src;
+const WORLD=3.0,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
 function onScroll(){
   T=clamp(scrollY/(story.offsetHeight-innerHeight));hk=1-ease(clamp(T/.12));
   const s=ease(clamp(T/.2)),k=lerp(1,.3,s);
@@ -88,7 +88,7 @@ function onScroll(){
   tlFill.style.setProperty('--fill',Math.max(0,P*dist-innerHeight*.3).toFixed(1)+'px');
   tlItems.forEach((e,i)=>{const a=clamp(1-Math.abs(i-P*(N-1))*1.3);e.style.setProperty('--a',a.toFixed(3));e.classList.toggle('on',a>.6)})}
 
-  rItems.forEach(e=>{e.style.transform=`translate3d(${(-R*WT*e._d).toFixed(1)}px,0,0)`});
+  const mobR=innerWidth<=700;rItems.forEach(e=>{e.style.transform=`translate3d(${(-R*WT*(mobR&&e._dm?e._dm:e._d)).toFixed(1)}px,0,0)`});
   marq.style.opacity=clamp((T-.07)/.08);
   [hero,hch].forEach(e=>{e.style.opacity=clamp(1-s*2.4);e.style.transform=`translateY(${(-s*60).toFixed(1)}px)`});
   sigT=easeS(clamp((T-.26)/.5));
