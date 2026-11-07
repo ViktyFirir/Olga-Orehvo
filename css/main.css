@@ -437,3 +437,17 @@ html{scrollbar-gutter:auto}
 /* ===== производительность ===== */
 /* круги-подсветка: изолируем, чтобы их перерисовка не задевала остальную страницу */
 .iri{contain:layout paint}
+
+
+/* ===== адаптив для телефонов: первый экран ===== */
+@media(max-width:700px){
+  /* 100vh на телефоне включает область под панелью браузера — низ обрезался. dvh = реально видимая высота */
+  @supports(height:100dvh){.stage{height:100dvh}}
+  /* плашки: одна компактная строка внизу, только названия — лицо больше не закрывается */
+  .hchips{left:10px;right:10px;bottom:max(10px,env(safe-area-inset-bottom,0px));grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+  .chip{padding:.55em .3em;border-radius:12px;align-items:center;text-align:center;gap:0;font-size:.6rem}
+  .chip i,.chip small{display:none}
+  .chip b{font-size:1.45em;letter-spacing:0}
+  /* роспись крупнее, чтобы была хорошо видна на узком экране */
+  .sig{width:min(88vw,56vh)}
+}
