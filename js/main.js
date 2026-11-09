@@ -67,7 +67,7 @@ let rw=[1,1];const meas=()=>{rw=['#ra','#rb'].map(q=>$(q).scrollWidth/5||1)};mea
 const story=$('#story'),shot=$('#shot'),shotbg=$('#shotbg'),w1=$('#w1'),w2=$('#w2'),ph=$('#ph'),marq=$('#marq'),hero=$('#hero'),hch=$('#hchips'),root=document.documentElement;
 const c0=[230,230,250],c1=[27,0,63];let T=0,dark=false;
 const tlTrack=$('#ttrack'),tlFill=$('#tfill'),tlItems=[...document.querySelectorAll('#timeline .tli')];
-const WORLD=5.9,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
+const WORLD_D=6.0,WORLD_M=6.9,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
 const L={sh:1,rt:0,rh:1,tt:0};
 const measureL=()=>{L.sh=story.offsetHeight;const r=$('#reviews');L.rt=r.offsetTop;L.rh=r.offsetHeight;L.tt=$('#timeline').offsetTop};
 let lastS=-1,lastCol='';
@@ -85,7 +85,7 @@ function onScroll(){
   if(colF!==lastCol){lastCol=colF;root.style.setProperty('--bg',colF);document.body.style.background=colF;root.style.background=colF}}
   document.body.classList.toggle('dark',s>.45&&lt<.5);dark=s>.45&&lt<.5;
   tone=clamp(s*1.25)*(1-lt);
-  const WT=(WORLD-1)*innerWidth;
+  const WT=((innerWidth<=700?WORLD_M:WORLD_D)-1)*innerWidth;
   /* хронология */
   {const tl=$('#timeline'),N=tlItems.length,gap=Math.round(innerHeight*(innerWidth<700?.5:.44)),dist=(N-1)*gap;
   tl.style.height=(innerHeight+dist+innerHeight*.35)+'px';tlTrack.style.setProperty('--gap',gap+'px');tlTrack.style.setProperty('--dist',dist+'px');
