@@ -67,7 +67,7 @@ let rw=[1,1];const meas=()=>{rw=['#ra','#rb'].map(q=>$(q).scrollWidth/5||1)};mea
 const story=$('#story'),shot=$('#shot'),shotbg=$('#shotbg'),w1=$('#w1'),w2=$('#w2'),ph=$('#ph'),marq=$('#marq'),hero=$('#hero'),hch=$('#hchips'),root=document.documentElement;
 const c0=[230,230,250],c1=[27,0,63];let T=0,dark=false;
 const tlTrack=$('#ttrack'),tlFill=$('#tfill'),tlItems=[...document.querySelectorAll('#timeline .tli')];
-const WORLD=3.0,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
+const WORLD=5.9,rItems=[...document.querySelectorAll('#reviews .ri')];rItems.forEach(e=>{e._d=+e.dataset.d||1;e._dm=+e.dataset.dm||0});const tph=$('#tlph');if(tph)tph.src=ph.src;
 const L={sh:1,rt:0,rh:1,tt:0};
 const measureL=()=>{L.sh=story.offsetHeight;const r=$('#reviews');L.rt=r.offsetTop;L.rh=r.offsetHeight;L.tt=$('#timeline').offsetTop};
 let lastS=-1,lastCol='';
