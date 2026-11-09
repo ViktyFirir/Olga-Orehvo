@@ -454,3 +454,5 @@ html{scrollbar-gutter:auto}
   /* роспись крупнее, чтобы была хорошо видна на узком экране */
   .sig{width:min(88vw,56vh)}
 }
+/* «Слова коллег»: если карточек нечётное число, последняя на всю ширину */
+@media(min-width:901px){.vg .vq:last-child:nth-child(odd){grid-column:1/-1}}
