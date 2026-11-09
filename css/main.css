@@ -456,3 +456,5 @@ html{scrollbar-gutter:auto}
 }
 /* «Слова коллег»: если карточек нечётное число, последняя на всю ширину */
 @media(min-width:901px){.vg .vq:last-child:nth-child(odd){grid-column:1/-1}}
+/* телефон: ещё одна карточка в ленте отзывов — блок чуть длиннее */
+@media(max-width:700px){#reviews{height:740vh}}
