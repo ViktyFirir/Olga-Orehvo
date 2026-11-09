@@ -55,7 +55,7 @@ body.dark .sig{filter:brightness(0) invert(1) sepia(.18) saturate(1.6) hue-rotat
 #about h2 em{font:800 1.02em/1 var(--serif);color:var(--lime2);letter-spacing:0}
 @media(max-width:700px){.chip{font-size:.7rem;padding:.65em .8em}.big{font-size:34vw;top:16%}#ph{height:78%}.row{font-size:15vw}}
 
-#reviews{height:420vh;position:relative}
+#reviews{height:640vh;position:relative}
 .rstage{position:sticky;top:0;height:100vh;overflow:hidden;z-index:2}
 .ri{position:absolute;left:calc(var(--x)*100vw);top:calc(var(--y)*1%);will-change:transform}
 .rtext{color:var(--ink);transition:color .4s}body.dark .rtext{color:var(--cream)}
